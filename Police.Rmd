@@ -1,0 +1,46 @@
+---
+title: "Police"
+author: "JaSai"
+date: "2023-10-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Libraries
+library(dplyr)
+library(ggplot2)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Data}
+# Getting data and looking at data
+data <- read.csv("police_project.csv")
+head(data)
+```
+```{r Int}
+#Turning the stop time columns into a numeric type column call val time
+data$val_time <- c(as.numeric(substr(data$stop_time, start = 1, stop = 2)) * 60 + as.numeric(substr(data$stop_time, start = 4, stop = 5)))
+```
+
+```{r Clean}
+# Cleaning the data
+clean <- data[data$driver_gender != "",]
+```
+
+```{r Bar}
+# Making a bar plot for gender type
+grouped <- clean %>% group_by(driver_gender) %>% summarise(total_count=n(), .groups = 'drop')
+grouped
+# Barplot
+ggplot(grouped, aes(x=driver_gender, y=total_count)) + geom_bar(stat = "identity")
+```
+```{r Hist}
+hist(clean$val_time, breaks = 31)
+```
+```{r Box}
+group <- clean %>% group_by(driver_gender)
+group
+ggplot(group, aes(x=driver_gender, y=val_time, fill=driver_gender)) + geom_boxplot() 
+```
+
+
